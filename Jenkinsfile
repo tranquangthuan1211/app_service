@@ -1,9 +1,27 @@
 pipeline {
-  agent any
-  post {
-    always {
-      echo "Cleaning up Docker images..."
-      sh 'docker system prune -f || true'
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+            }
+        }
     }
-  }
+
+    post {
+        always {
+            echo 'This will always run'
+        }
+    }
 }
