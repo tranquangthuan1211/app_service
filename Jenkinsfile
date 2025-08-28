@@ -67,12 +67,15 @@ pipeline {
                         echo "Building and pushing image for: ${service} as ${imageName}"
 
                         dir(service) {
-                        // Build image using Maven wrapper and Docker profile
-                            sh "../mvnw clean install -P buildDocker -DskipTests"
+                            // Install dependencies & build Node.js app
+                            sh "npm install"
+                            sh "npm run build || echo 'No build script defined, skipping build'"
 
                             withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIALS_ID, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                                 sh 'echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin'
-                                sh "docker tag ${imageName} ${imageName}:${commitId}"
+
+                                // Build & push Docker image
+                                sh "docker build -t ${imageName}:${commitId} -t ${imageName}:latest ."
                                 sh "docker push ${imageName}:${commitId}"
                                 sh "docker push ${imageName}:latest"
                             }
