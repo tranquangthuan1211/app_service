@@ -4,6 +4,9 @@ pipeline {
         DOCKER_CREDENTIALS_ID = 'dockeraccess'
         REPO_URL = 'https://github.com/tranquangthuan1211/app_service.git'
     }
+    tools {
+        nodejs "NodeJS_18" 
+    }
     parameters {
         string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Branch to build')
     }
@@ -50,6 +53,8 @@ pipeline {
                 expression { return env.CHANGED_SERVICES?.trim() }
             }
             steps {
+                sh 'node -v'
+                sh 'npm -v'
                 script {
                     def commitId = sh(script: 'git rev-parse HEAD', returnStdout: true).trim().take(7)
                     def changedServices = env.CHANGED_SERVICES.split(',').findAll { it?.trim() }
