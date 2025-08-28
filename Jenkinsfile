@@ -72,20 +72,16 @@ pipeline {
                         echo "Building and pushing image for: ${service} as ${imageName}"
 
                         dir(service) {
-                            // Install dependencies & build Node.js app
                             sh "npm install"
                             sh "npm run build || echo 'No build script defined, skipping build'"
 
                             withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIALS_ID, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                                 sh 'echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin'
 
-                                // Build Docker image từ service directory
                                 sh "docker build -t ${imageName}:latest ."
 
-                                // Lấy commitId gắn tag
                                 sh "docker tag ${imageName}:latest ${imageName}:${commitId}"
 
-                                // Push lên DockerHub
                                 sh "docker push ${imageName}:${commitId}"
                                 sh "docker push ${imageName}:latest"
                             }
