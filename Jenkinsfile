@@ -78,7 +78,14 @@ pipeline {
 
                             withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIALS_ID, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                                 sh 'echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin'
-                                sh "docker tag ${imageName} ${imageName}:${commitId}"
+
+                                // Build Docker image từ service directory
+                                sh "docker build -t ${imageName}:latest ."
+
+                                // Lấy commitId gắn tag
+                                sh "docker tag ${imageName}:latest ${imageName}:${commitId}"
+
+                                // Push lên DockerHub
                                 sh "docker push ${imageName}:${commitId}"
                                 sh "docker push ${imageName}:latest"
                             }
