@@ -6,7 +6,6 @@ pipeline {
     }
     tools {
         nodejs "NodeJS_18" 
-        dockerTool 'Docker_20.10'
     }
     parameters {
         string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Branch to build')
