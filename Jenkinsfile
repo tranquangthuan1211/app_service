@@ -35,9 +35,50 @@ pipeline {
                 }
             }
         }
-        stage('Deploy') {
+        stage('Skip Build (No Services Changed)') {
+            when {
+                not {
+                    expression { return env.CHANGED_SERVICES?.trim() }
+                }
+            }
             steps {
-                echo 'Deploying...'
+                echo "No changed services detected. Skipping build and push."
+            }
+        }
+        stage('Build & Push Changed Images') {
+            when {
+                expression { return env.CHANGED_SERVICES?.trim() }
+            }
+            steps {
+                script {
+                    def commitId = sh(script: 'git rev-parse HEAD', returnStdout: true).trim().take(7)
+                    def changedServices = env.CHANGED_SERVICES.split(',').findAll { it?.trim() }
+
+                    // Ánh xạ service -> image name
+                    def imageMap = [
+                        'users': 'tqthuan2504/users-service',
+                        'gateway': 'tqthuan2504/gateway-service',
+                        'orders': 'tqthuan2504/orders-service',
+                        'products': 'tqthuan2504/products-service'
+                    ]
+
+                    changedServices.each { service ->
+                        def imageName = imageMap[service]
+                        echo "Building and pushing image for: ${service} as ${imageName}"
+
+                        dir(service) {
+                        // Build image using Maven wrapper and Docker profile
+                            sh "../mvnw clean install -P buildDocker -DskipTests"
+
+                            withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIALS_ID, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                                sh 'echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin'
+                                sh "docker tag ${imageName} ${imageName}:${commitId}"
+                                sh "docker push ${imageName}:${commitId}"
+                                sh "docker push ${imageName}:latest"
+                            }
+                        }
+                    }
+                }
             }
         }
     }
