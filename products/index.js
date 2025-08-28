@@ -2,8 +2,8 @@ const express = require("express");
 const app = express();
 
 app.get("/", (req, res) => {
-    res.send("product Service");
+    res.send("product Service hello every one");
     });
 app.listen(5002, () => {
-    console.log("🚀 User Service running at http://localhost:5002");
+    console.log("🚀 Product Service running at http://localhost:5002");
     });
