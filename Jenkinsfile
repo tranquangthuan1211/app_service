@@ -78,9 +78,7 @@ pipeline {
 
                             withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIALS_ID, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                                 sh 'echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin'
-
-                                // Build & push Docker image
-                                sh "docker build -t ${imageName}:${commitId} -t ${imageName}:latest ."
+                                sh "docker tag ${imageName} ${imageName}:${commitId}"
                                 sh "docker push ${imageName}:${commitId}"
                                 sh "docker push ${imageName}:latest"
                             }
