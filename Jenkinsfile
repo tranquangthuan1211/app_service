@@ -66,7 +66,6 @@ pipeline {
                         'orders': 'tqthuan2504/orders-service',
                         'products': 'tqthuan2504/products-service'
                     ]
-
                     changedServices.each { service ->
                         def imageName = imageMap[service]
                         echo "Building and pushing image for: ${service} as ${imageName}"
@@ -99,7 +98,7 @@ pipeline {
                     changedServices.each { svc ->
                         sh """
                         yq e -i '.${svc}.enabled = true' ./helm-chart/pet-service/values.yaml
-                        yq e -i '.${svc}.image.tag = "${IMAGE_TAG}"' ./helm-chart/pet-service/values.yaml
+                        yq e -i '.${svc}.image.tag = "tqthuan2504/products-service"' ./helm-chart/pet-service/values.yaml
                         """
                     }
                 }
