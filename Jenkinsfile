@@ -90,6 +90,33 @@ pipeline {
                 }
             }
         }
+        stage('Update Helm values') {
+            steps {
+                script {
+                    sh "yq e -i '.*.enabled = false' ./helm-chart/pet-service/values.yaml"
+
+                    servicesToDeploy.each { svc ->
+                        sh """
+                          yq e -i '.${svc}.enabled = true' ./helm-chart/pet-service/values.yaml
+                          yq e -i '.${svc}.image.tag = "${IMAGE_TAG}"' ./helm-chart/pet-service/values.yaml
+                        """
+                    }
+                }
+            }
+        }
+        stage('Lint Helm Chart') {
+            steps {
+                script {
+                    // Lấy danh sách service có enabled = true
+                    def enabledServices = sh(
+                        script: "yq e 'keys | .[]' ./helm-chart/pet-service/values.yaml | while read key; do if [ \"$(yq e .${key}.enabled ./helm-chart/pet-service/values.yaml)\" = true ]; then echo $key; fi; done",
+                        returnStdout: true
+            ).trim().split("\n")
+
+            echo "✅ Services enabled: ${enabledServices}"
+        }
+    }
+}
     }
 
     post {
