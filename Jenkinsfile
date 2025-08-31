@@ -90,7 +90,21 @@ pipeline {
                 }
             }
         }
-        
+        stage('Update Helm values') {
+            steps {
+                script {
+                    def changedServices = env.CHANGED_SERVICES.split(',').findAll { it?.trim() }
+                    sh "yq e -i '.*.enabled = false' ./helm-chart/pet-service/values.yaml"
+
+                    changedServices.each { svc ->
+                        sh """
+                        yq e -i '.${svc}.enabled = true' ./helm-chart/pet-service/values.yaml
+                        yq e -i '.${svc}.image.tag = "${IMAGE_TAG}"' ./helm-chart/pet-service/values.yaml
+                        """
+                    }
+                }
+            }
+        }
         stage('Lint Helm Chart') {
             steps {
                 sh 'yq --version'
