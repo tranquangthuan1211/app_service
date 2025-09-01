@@ -1,4 +1,4 @@
-apigateway:
+gateway:
   enabled: true
   fullnameOverride: api-gateway
   image:

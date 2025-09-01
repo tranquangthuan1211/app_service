@@ -63,7 +63,7 @@ pipeline {
                     // Ánh xạ service -> image name
                     def imageMap = [
                         'users': 'tqthuan2504/users-service',
-                        'apigateway': 'tqthuan2504/gateway-service',
+                        'gateway': 'tqthuan2504/gateway-service',
                         'orders': 'tqthuan2504/orders-service',
                         'products': 'tqthuan2504/products-service'
                     ]

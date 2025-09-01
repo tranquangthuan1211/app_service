@@ -9,8 +9,8 @@ dependencies:
   - name: service-common
     version: 0.1.0
     repository: "file://../service-common"
-    alias: apigateway
-    condition: apigateway.enabled
+    alias: gateway
+    condition: gateway.enabled
   - name: service-common
     version: 0.1.0
     repository: "file://../service-common"
