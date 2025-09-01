@@ -124,7 +124,17 @@ pipeline {
                 }
             }
         }
-
+        stage('Deploy Helm Chart') {
+            when {
+                expression { return env.CHANGED_SERVICES?.trim() }
+            }
+            steps {
+                 sh """
+                    helm upgrade --install pet-service ./helm-chart/pet-service \
+                    -f ./helm-chart/pet-service/values.yaml
+                    """
+            }
+        }
     }
 
     post {
