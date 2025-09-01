@@ -13,6 +13,9 @@ const app = express();
 // });
 
 // Proxy tới User service
+app.get('/', (req, res) => {
+  res.send("User Service");
+});
 app.use(
   "/users",
   createProxyMiddleware({
@@ -42,6 +45,6 @@ app.use(
   })
 );
 
-app.listen(5000, () => {
-  console.log("🚀 API Gateway running at http://localhost:5000");
+app.listen(3000, () => {
+  console.log("🚀 API Gateway running at http://localhost:3000");
 });
