@@ -130,7 +130,7 @@ pipeline {
             }
             steps {
                 sh """
-                helm lint ./chart-helm/pet-service
+                helm template pet-service ./chart-helm/pet-service -f ./chart-helm/pet-service/values.yaml
                 """
             }
         }
