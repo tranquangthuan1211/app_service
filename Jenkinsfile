@@ -101,6 +101,7 @@ pipeline {
                         yq e -i '.${svc}.enabled = true' ./chart-helm/pet-service/values.yaml
                         """
                     }
+                    sh "yq '.gateway.ingress.enabled' ./chart-helm/pet-service/values.yaml"
                 }
             }
         }
