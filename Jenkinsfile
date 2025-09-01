@@ -99,7 +99,6 @@ pipeline {
                     changedServices.each { svc ->
                         sh """
                         yq e -i '.${svc}.enabled = true' ./chart-helm/pet-service/values.yaml
-                        yq e -i '.${svc}.image.tag = "tqthuan2504/gateway-service"' ./chart-helm/pet-service/values.yaml
                         """
                     }
                 }
