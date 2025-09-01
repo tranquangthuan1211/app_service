@@ -93,12 +93,12 @@ pipeline {
             steps {
                 script {
                     def changedServices = env.CHANGED_SERVICES.split(',').findAll { it?.trim() }
-                    sh "yq e -i '.*.enabled = false' ./helm-chart/pet-service/values.yaml"
+                    sh "yq e -i '.*.enabled = false' ./chart-helm/pet-service/values.yaml"
                     echo "${changedServices}"
                     changedServices.each { svc ->
                         sh """
-                        yq e -i '.${svc}.enabled = true' ./helm-chart/pet-service/values.yaml
-                        yq e -i '.${svc}.image.tag = "tqthuan2504/products-service"' ./helm-chart/pet-service/values.yaml
+                        yq e -i '.${svc}.enabled = true' ./chart-helm/pet-service/values.yaml
+                        yq e -i '.${svc}.image.tag = "tqthuan2504/products-service"' ./chart-helm/pet-service/values.yaml
                         """
                     }
                 }
@@ -111,8 +111,8 @@ pipeline {
                     // Lấy danh sách service có enabled = true
                     def enabledServices = sh(
                         script: '''
-                        for key in $(yq e 'keys | .[]' ./helm-chart/pet-service/values.yaml); do
-                            if [ "$(yq e .${key}.enabled ./helm-chart/pet-service/values.yaml)" = "true" ]; then
+                        for key in $(yq e 'keys | .[]' ./chart-helm/pet-service/values.yaml); do
+                            if [ "$(yq e .${key}.enabled ./chart-helm/pet-service/values.yaml)" = "true" ]; then
                             echo ${key}
                             fi
                         done
@@ -130,9 +130,9 @@ pipeline {
             }
             steps {
                  sh """
-                    helm dependency update ./helm-chart/pet-service
-                    helm upgrade --install pet-service ./helm-chart/pet-service \
-                    -f ./helm-chart/pet-service/values.yaml
+                    helm dependency update ./chart-helm/pet-service
+                    helm upgrade --install pet-service ./chart-helm/pet-service \
+                    -f ./chart-helm/pet-service/values.yaml
                     """
             }
         }

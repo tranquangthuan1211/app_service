@@ -1,0 +1,18 @@
+apiVersion: v2
+name: pet-clinic
+description: Parent chart that deploys services using service-common
+type: application
+version: 0.1.0
+appVersion: "1.0"
+
+dependencies:
+  - name: service-common
+    version: 0.1.0
+    repository: "file://../service-common"
+    alias: apigateway
+    condition: apigateway.enabled
+  - name: service-common
+    version: 0.1.0
+    repository: "file://../service-common"
+    alias: user
+    condition: user.enabled
