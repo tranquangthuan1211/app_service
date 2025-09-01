@@ -129,11 +129,9 @@ pipeline {
                 expression { return env.CHANGED_SERVICES?.trim() }
             }
             steps {
-                 sh """
-                    helm dependency update ./chart-helm/pet-service
-                    helm upgrade --install pet-service ./chart-helm/pet-service \
-                    -f ./chart-helm/pet-service/values.yaml -n deployment
-                    """
+                sh """
+                helm lint ./chart-helm/pet-service
+                """
             }
         }
     }
