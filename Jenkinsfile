@@ -5,7 +5,6 @@ pipeline {
         REPO_URL = 'https://github.com/tranquangthuan1211/app_service.git'
         KUBECONFIG = "/etc/rancher/k3s/k3s.yaml"
         IMAGE_PUSH = ""
-        TAG = ""
     }
     tools {
         nodejs "NodeJS_18" 
