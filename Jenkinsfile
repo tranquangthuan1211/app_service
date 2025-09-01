@@ -130,6 +130,7 @@ pipeline {
             }
             steps {
                  sh """
+                    helm dependency update ./helm-chart/pet-service
                     helm upgrade --install pet-service ./helm-chart/pet-service \
                     -f ./helm-chart/pet-service/values.yaml
                     """
