@@ -14,7 +14,7 @@ const app = express();
 
 // Proxy tới User service
 app.get('/', (req, res) => {
-  res.send("hello api gateway");
+  res.send("hello api gatewadmđny");
 });
 app.use(
   "/users",
