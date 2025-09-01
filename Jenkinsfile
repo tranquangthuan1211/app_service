@@ -1,5 +1,10 @@
-stage('Test kubeconfig') {
-  steps {
-    sh 'kubectl get nodes'
+pipeline {
+  agent any
+  stages {
+    stage('Test kubeconfig') {
+      steps {
+        sh 'kubectl get nodes'
+      }
+    }
   }
 }
