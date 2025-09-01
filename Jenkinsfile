@@ -100,6 +100,7 @@ pipeline {
                     def changedServices = env.CHANGED_SERVICES.split(',').findAll { it?.trim() }
                     sh "yq e -i '.*.enabled = false' ./chart-helm/pet-service/values.yaml"
                     echo "${changedServices}"
+                    echo "tag for image: ${env.TAG}"
                     changedServices.each { svc ->
                         sh """
                         yq e -i '.${svc}.enabled = true' ./chart-helm/pet-service/values.yaml
