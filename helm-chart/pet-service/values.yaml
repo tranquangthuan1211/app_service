@@ -2,7 +2,7 @@ gateway:
   enabled: true
   fullnameOverride: api-gateway
   image:
-    repository: tqthuan2504/api-gateway
+    repository: tqthuan2504/gateway-service
     tag: "latest"
   service:
     port: 3000
@@ -21,7 +21,7 @@ user:
   enabled: true
   fullnameOverride: user-service
   image:
-    repository: tqthuan2504/user-service
+    repository: tqthuan2504/users-service
     tag: "latest"
   service:
     port: 3001
