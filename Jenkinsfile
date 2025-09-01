@@ -131,6 +131,7 @@ pipeline {
             }
             steps {
                 sh """
+                helm dependency update ./chart-helm/pet-service
                 helm template pet-service ./chart-helm/pet-service -f ./chart-helm/pet-service/values.yaml
                 """
             }
