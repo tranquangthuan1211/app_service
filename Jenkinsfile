@@ -4,6 +4,8 @@ pipeline {
         DOCKER_CREDENTIALS_ID = 'dockeraccess'
         REPO_URL = 'https://github.com/tranquangthuan1211/app_service.git'
         KUBECONFIG = "/etc/rancher/k3s/k3s.yaml"
+        IMAGE_PUSH = ""
+        TAG = ""
     }
     tools {
         nodejs "NodeJS_18" 
@@ -58,6 +60,7 @@ pipeline {
                 sh 'npm -v'
                 script {
                     def commitId = sh(script: 'git rev-parse HEAD', returnStdout: true).trim().take(7)
+                    env.TAG = commitId
                     def changedServices = env.CHANGED_SERVICES.split(',').findAll { it?.trim() }
 
                     // Ánh xạ service -> image name
@@ -69,6 +72,7 @@ pipeline {
                     ]
                     changedServices.each { service ->
                         def imageName = imageMap[service]
+                        env.IMAGE_PUSH = imageName
                         echo "Building and pushing image for: ${service} as ${imageName}"
 
                         dir(service) {
@@ -99,6 +103,7 @@ pipeline {
                     changedServices.each { svc ->
                         sh """
                         yq e -i '.${svc}.enabled = true' ./chart-helm/pet-service/values.yaml
+                        yq e -i '.${svc}.image.tag = "${TAG}"' ./chart-helm/pet-service/values.yaml
                         yq e -i '.${svc}.ingress.enabled = true' ./chart-helm/pet-service/values.yaml
                         """
                     }
@@ -133,7 +138,7 @@ pipeline {
                 sh """
                 helm dependency update ./chart-helm/pet-service
                 helm template pet-service ./chart-helm/pet-service -f ./chart-helm/pet-service/values.yaml
-                helm upgrade --install pet-service ./chart-helm/pet-service -f ./chart-helm/pet-service/values.yaml
+                helm upgrade --install pet-service ./chart-helm/pet-service -f ./chart-helm/pet-service/values.yaml -n deployment
                 """
             }
         }
