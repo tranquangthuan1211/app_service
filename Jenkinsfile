@@ -3,6 +3,7 @@ pipeline {
     environment {
         DOCKER_CREDENTIALS_ID = 'dockeraccess'
         REPO_URL = 'https://github.com/tranquangthuan1211/app_service.git'
+        KUBECONFIG = "/etc/rancher/k3s/k3s.yaml"
     }
     tools {
         nodejs "NodeJS_18" 
